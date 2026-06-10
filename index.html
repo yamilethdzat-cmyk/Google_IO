@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-[#f8f9fa]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descarga tu Constancia | Build With AI Week</title>
+    <!-- Google Fonts: Open Sans y Product Sans/Google Sans (usamos Roboto y Montserrat como alternativas libres) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        title: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8', // Azul oficial Google
+                            blueHover: '#1557b0',
+                            red: '#ea4335',
+                            yellow: '#fbbc05',
+                            green: '#34a853',
+                            grey: '#5f6368',
+                            lightGrey: '#f1f3f4',
+                            border: '#dadce0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- jsPDF CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* Estilos finos para emular el estilo de Google Developer Groups */
+        .google-card {
+            background-color: #ffffff;
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+        .nav-link:hover {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between text-[#202124] antialiased font-sans">
+
+    <!-- Header / Navbar estilo Google Developer Groups -->
+    <header class="w-full bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <!-- Logo oficial proporcionado (logo_gdg_cloud.png) -->
+                <a href="https://gdg.community.dev/gdg-cloud-mexico-city/" target="_blank" rel="noopener noreferrer" class="flex items-center">
+                    <img src="logo_gdg_cloud.png" alt="Google Developer Group Cloud Mexico City" class="h-8 sm:h-9 object-contain">
+                </a>
+            </div>
+            
+            <!-- Enlaces estilo GDG Portal -->
+            <nav class="flex items-center gap-6 text-sm font-medium text-google-grey">
+                <a href="https://gdg.community.dev/gdg-cloud-mexico-city/" target="_blank" rel="noopener noreferrer" class="nav-link py-5 border-b-2 border-transparent transition-all">About GDG</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow flex items-center justify-center py-10 px-4 sm:px-6">
+        <div class="w-full max-w-2xl">
+            
+            <!-- Contenedor / Tarjeta de Google -->
+            <div class="google-card rounded-lg overflow-hidden">
+                
+                <!-- Banner superior del Evento (logo_bwai_gdg.png) -->
+                <div class="bg-white p-6 border-b border-gray-100 flex justify-center items-center">
+                    <img src="logo_bwai_gdg.png" alt="Build With AI" class="w-full h-auto object-contain">
+                </div>
+                
+                <!-- Cuerpo de la Tarjeta -->
+                <div class="p-8">
+                    <!-- Títulos del Evento -->
+                    <div class="mb-8">
+                        <h1 class="text-2xl font-bold tracking-tight text-gray-900 font-title mb-2">
+                            Build with AI Week: Gira Universitaria Sur de Tamaulipas 2026
+                        </h1>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-google-grey mb-4 font-medium">
+                            <span>Multiple Venues - University Roadshow</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-gray-350"></span>
+                            <span class="text-google-blue">GDG Cloud Mexico City</span>
+                        </div>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            ¡La IA de Google aterriza en el sur de Tamaulipas! Si participaste en las conferencias o talleres, ingresa tu correo institucional o personal de registro para descargar tu constancia de participación en PDF de alta calidad.
+                        </p>
+                    </div>
+
+                    <!-- Formulario de Obtención -->
+                    <form id="constancia-form" class="space-y-6">
+                        <div>
+                            <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-google-grey mb-2">
+                                Correo de Registro
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path>
+                                    </svg>
+                                </div>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    required
+                                    placeholder="correo@ejemplo.com"
+                                    class="w-full pl-11 pr-4 py-3 bg-white border border-google-border rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-google-blue focus:border-google-blue transition-all duration-200 text-sm shadow-inner"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Botón de Envío (Estilo Google Button) -->
+                        <button 
+                            type="submit" 
+                            id="submit-btn"
+                            class="w-full sm:w-auto flex items-center justify-center gap-2 py-2.5 px-6 bg-google-blue hover:bg-google-blueHover text-white font-semibold rounded-md shadow-sm hover:shadow transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                        >
+                            <span id="btn-text">Obtener Constancia</span>
+                            <!-- Spinner de carga -->
+                            <svg id="btn-spinner" class="hidden animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Contenedor para Alertas (Dinámico para tema claro) -->
+                    <div id="alert-container" class="mt-6 hidden transition-all duration-300">
+                        <div id="alert-box" class="flex items-start gap-3 p-4 rounded-md border text-sm">
+                            <div id="alert-icon-wrapper" class="flex-shrink-0 mt-0.5">
+                                <!-- El SVG se insertará mediante JS -->
+                            </div>
+                            <div class="flex-1">
+                                <h3 id="alert-title" class="font-semibold text-gray-900"></h3>
+                                <p id="alert-message" class="text-xs mt-1 leading-relaxed text-gray-600"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Canvas Oculto para procesamiento de Imagen de Alta Calidad -->
+    <canvas id="constancia-canvas" class="hidden"></canvas>
+
+    <!-- Footer estilo Google Community -->
+    <footer class="w-full bg-white border-t border-gray-200 py-8 text-xs text-google-grey text-center">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="font-medium text-gray-800">&copy; 2026 Build with AI - Gira Universitaria Sur de Tamaulipas.</p>
+            <p>Este evento y portal son organizados de forma independiente por GDG Cloud Mexico City.</p>
+            <div class="flex justify-center gap-4 mt-3">
+                <a href="#" class="hover:underline hover:text-google-blue">Políticas de Privacidad</a>
+                <span>&bull;</span>
+                <a href="#" class="hover:underline hover:text-google-blue">Términos del Evento</a>
+                <span>&bull;</span>
+                <a href="#" class="hover:underline hover:text-google-blue">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script de lógica -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[
+  {
+    "correo": "luis.loera@ejemplo.com",
+    "nombre": "Luis Jeronimo Loera Moreno"
+  },
+  {
+    "correo": "ana.martinez@ejemplo.com",
+    "nombre": "Ana Sofía Martínez Ruiz"
+  },
+  {
+    "correo": "carlos.lopez@ejemplo.com",
+    "nombre": "Carlos Alberto López Gómez"
+  }
+]
