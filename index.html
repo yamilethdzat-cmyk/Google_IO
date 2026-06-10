@@ -40,6 +40,8 @@
     
     <!-- jsPDF CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- SheetJS CDN para leer Excel (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         /* Estilos finos para emular el estilo de Google Developer Groups */
@@ -149,6 +151,9 @@
                             <div class="flex-1">
                                 <h3 id="alert-title" class="font-semibold text-gray-900"></h3>
                                 <p id="alert-message" class="text-xs mt-1 leading-relaxed text-gray-600"></p>
+                                <p id="alert-notice" class="hidden text-xs mt-2 pt-2 border-t border-green-200 text-gray-500 italic leading-relaxed">
+                                    ⓘ Las constancias se generan con base en la información registrada en el formulario de inscripción al evento.
+                                </p>
                             </div>
                         </div>
                     </div>

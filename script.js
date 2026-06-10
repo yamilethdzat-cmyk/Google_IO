@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertIconWrapper = document.getElementById('alert-icon-wrapper');
     const alertTitle = document.getElementById('alert-title');
     const alertMessage = document.getElementById('alert-message');
+    const alertNotice = document.getElementById('alert-notice');
     
     const canvas = document.getElementById('constancia-canvas');
     const ctx = canvas.getContext('2d');
@@ -66,6 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
         alertTitle.textContent = title;
         alertMessage.textContent = message;
         
+        // Mostrar aviso informativo solo cuando la descarga fue exitosa
+        if (type === 'success') {
+            alertNotice.classList.remove('hidden');
+        } else {
+            alertNotice.classList.add('hidden');
+        }
+        
         alertContainer.classList.remove('hidden');
         alertContainer.classList.add('animate-fade-in');
     }
@@ -110,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showAlert('loading', 'Buscando Correo', 'Estamos validando tu asistencia al evento en la base de datos...');
 
         try {
-            // Realizar fetch a participantes.json
+            // Realizar fetch a participantes.json (generado desde Nombres_GDG_2026.xlsx)
             // Usamos un query timestamp para evitar almacenamiento en caché en GitHub Pages
             const response = await fetch(`participantes.json?t=${Date.now()}`);
             if (!response.ok) {
@@ -119,14 +127,28 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const participantes = await response.json();
             
-            // Buscar coincidencia exacta
-            const participante = participantes.find(p => p.correo.trim().toLowerCase() === emailValue);
+            if (participantes.length === 0) {
+                showAlert('error', 'Archivo Vacío', 'La base de datos de participantes está vacía.');
+                setLoading(false);
+                return;
+            }
             
-            if (!participante) {
+            // Buscar coincidencia de correo (insensible a mayúsculas/minúsculas y espacios)
+            const rowCoincidente = participantes.find(p =>
+                p.email && p.email.trim().toLowerCase() === emailValue
+            );
+            
+            if (!rowCoincidente) {
                 showAlert('error', 'Registro No Encontrado', 'El correo ingresado no se encuentra registrado en el evento. Verifica tu ortografía e intenta de nuevo.');
                 setLoading(false);
                 return;
             }
+
+            // Construir nombre completo desde first_name + last_name
+            const participante = {
+                correo: rowCoincidente.email.trim(),
+                nombre: `${rowCoincidente.first_name} ${rowCoincidente.last_name}`.trim()
+            };
 
             // Si se encuentra, proceder a generar la constancia
             showAlert('loading', 'Generando Certificado', 'Constancia encontrada. Procesando la plantilla de alta resolución...');
@@ -145,14 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Dibujar la plantilla oficial
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
-                    /**
-                     * NOTA IMPORTANTE:
-                     * La imagen 'constancia_base.png' provista por el usuario ya contiene impreso
-                     * el nombre de "Luis Jeronimo Loera Moreno". Para hacer esta aplicación dinámica
-                     * y que funcione con otros participantes, cubriremos el área del nombre con un
-                     * rectángulo blanco antes de escribir el nombre detectado en participantes.json.
-                     * Si se cambia por una plantilla vacía en producción, este parche no afectará visualmente.
-                     */
                     const nameAreaX = canvas.width / 2;
                     const nameAreaY = 322; // Centro estimado del campo de nombre en la plantilla
                     const clearWidth = 620; // Ancho para cubrir el nombre original
