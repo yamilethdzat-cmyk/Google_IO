@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Cargar la plantilla
             const img = new Image();
             img.crossOrigin = "anonymous";
-            img.src = 'constancia_base.png';
+            img.src = `constancia_base.png?t=${Date.now()}`;
 
             img.onload = async () => {
                 try {
@@ -254,15 +254,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
                     const nameAreaX = canvas.width / 2;
-                    const nameAreaY = 322;
-                    const clearWidth = 620;
-                    const clearHeight = 55;
+                    const nameAreaY = 750; // Posición vertical óptima calculada (entre "a:" en Y=689 y la línea en Y=807)
+                    const clearWidth = 1200;
+                    const clearHeight = 80;
                     
                     ctx.fillStyle = '#FFFFFF';
                     ctx.fillRect(nameAreaX - (clearWidth / 2), nameAreaY - (clearHeight / 2), clearWidth, clearHeight);
                     
                     try {
-                        await document.fonts.load('bold 32px Montserrat');
+                        await document.fonts.load('bold 64px Montserrat');
                     } catch (fontError) {
                         console.warn('Usando fuente alternativa del sistema.', fontError);
                     }
@@ -271,13 +271,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     
-                    let fontSize = 32;
+                    let fontSize = 64; // Tamaño óptimo escalado proporcionalmente a la resolución 1999x1545
                     ctx.font = `bold ${fontSize}px "Montserrat", "Arial", sans-serif`;
                     
-                    const maxTextWidth = 600;
+                    const maxTextWidth = 1200; // Ancho máximo ajustado a las nuevas dimensiones
                     let textWidth = ctx.measureText(participante.nombre).width;
-                    while (textWidth > maxTextWidth && fontSize > 20) {
-                        fontSize -= 1;
+                    while (textWidth > maxTextWidth && fontSize > 36) {
+                        fontSize -= 2;
                         ctx.font = `bold ${fontSize}px "Montserrat", "Arial", sans-serif`;
                         textWidth = ctx.measureText(participante.nombre).width;
                     }
