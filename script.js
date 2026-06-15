@@ -1,9 +1,68 @@
 /**
  * Sistema de Constancias - Build With AI (BWAI)
- * Lógica del Cliente y Renderizado de Certificados en PDF
+ * Lógica del Cliente y Renderizado de Certificados en PDF con Desencriptación Interna
  */
 
+// Clave de encriptación interna para protección del archivo participantes.enc
+const DB_PASSWORD = "GDG_BWAI_2026";
+
+// --- Funciones de Desencriptación Auxiliares (SHA-256 + RC4) ---
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    return new Uint8Array(hashBuffer);
+}
+
+function rc4(key, data) {
+    let S = Array.from({length: 256}, (_, i) => i);
+    let j = 0;
+    
+    // KSA
+    for (let i = 0; i < 256; i++) {
+        j = (j + S[i] + key[i % key.length]) % 256;
+        let temp = S[i];
+        S[i] = S[j];
+        S[j] = temp;
+    }
+    
+    // PRGA
+    let i = 0;
+    j = 0;
+    let out = new Uint8Array(data.length);
+    for (let x = 0; x < data.length; x++) {
+        i = (i + 1) % 256;
+        j = (j + S[i]) % 256;
+        let temp = S[i];
+        S[i] = S[j];
+        S[j] = temp;
+        let t = (S[i] + S[j]) % 256;
+        out[x] = data[x] ^ S[t];
+    }
+    return out;
+}
+
+function base64ToBytes(base64Str) {
+    const binString = atob(base64Str);
+    return Uint8Array.from(binString, (m) => m.codePointAt(0));
+}
+
+async function decryptData(password, encryptedBase64) {
+    const key = await sha256(password);
+    const encryptedBytes = base64ToBytes(encryptedBase64);
+    const decryptedBytes = rc4(key, encryptedBytes);
+    return new TextDecoder().decode(decryptedBytes);
+}
+
+// --- Flujo Principal de la Interfaz ---
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Base de datos de participantes descifrada en memoria
+    let participantes = null;
+    let isDbLoading = true;
+    let dbErrorMsg = null;
+
+    // Elementos del buscador de constancias
     const form = document.getElementById('constancia-form');
     const emailInput = document.getElementById('email');
     const submitBtn = document.getElementById('submit-btn');
@@ -47,10 +106,39 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     /**
+     * Carga y desencripta automáticamente la base de datos de participantes
+     */
+    async function initDatabase() {
+        try {
+            const response = await fetch(`participantes.enc?t=${Date.now()}`);
+            if (!response.ok) {
+                throw new Error('No se pudo descargar la base de datos protegida.');
+            }
+            const encryptedBase64 = await response.text();
+            const decryptedJson = await decryptData(DB_PASSWORD, encryptedBase64);
+            const data = JSON.parse(decryptedJson);
+            
+            if (Array.isArray(data)) {
+                participantes = data;
+                isDbLoading = false;
+                console.log('Base de datos cargada y descifrada exitosamente.');
+            } else {
+                throw new Error('Formato de base de datos incorrecto.');
+            }
+        } catch (err) {
+            console.error('Error al inicializar la base de datos protegida:', err);
+            dbErrorMsg = 'Error al inicializar base de datos de participantes. Por favor reporta esto al administrador.';
+            isDbLoading = false;
+        }
+    }
+
+    // Iniciar carga en segundo plano
+    initDatabase();
+
+    /**
      * Muestra una alerta visual en la interfaz con animación de entrada suave.
      */
     function showAlert(type, title, message) {
-        // Limpiar estilos previos
         alertBox.className = "flex items-start gap-3 p-4 rounded-md border transition-all duration-300 ";
         
         if (type === 'error') {
@@ -67,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alertTitle.textContent = title;
         alertMessage.textContent = message;
         
-        // Mostrar aviso informativo solo cuando la descarga fue exitosa
         if (type === 'success') {
             alertNotice.classList.remove('hidden');
         } else {
@@ -78,16 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
         alertContainer.classList.add('animate-fade-in');
     }
 
-    /**
-     * Oculta el contenedor de alertas.
-     */
     function hideAlert() {
         alertContainer.classList.add('hidden');
     }
 
-    /**
-     * Activa o desactiva el estado de carga en el formulario.
-     */
     function setLoading(isLoading) {
         if (isLoading) {
             submitBtn.disabled = true;
@@ -102,7 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Escuchador de envío del formulario
+    // --- Buscador de Constancia ---
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         hideAlert();
@@ -114,26 +196,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Si aún se está cargando o hubo un error al inicializar
+        if (isDbLoading) {
+            setLoading(true);
+            showAlert('loading', 'Cargando Base de Datos', 'Inicializando la base de datos segura de asistencia, por favor espera un momento...');
+            // Esperar un momento y reintentar recursivamente
+            setTimeout(() => {
+                setLoading(false);
+                form.dispatchEvent(new Event('submit'));
+            }, 1000);
+            return;
+        }
+
+        if (dbErrorMsg) {
+            showAlert('error', 'Error del Sistema', dbErrorMsg);
+            return;
+        }
+
+        if (!participantes) {
+            showAlert('error', 'Error del Sistema', 'La base de datos de participantes no está disponible.');
+            return;
+        }
+
         setLoading(true);
-        showAlert('loading', 'Buscando Correo', 'Estamos validando tu asistencia al evento en la base de datos...');
+        showAlert('loading', 'Buscando Correo', 'Validando tu correo en la base de datos segura...');
 
         try {
-            // Realizar fetch a participantes.json (generado desde Nombres_GDG_2026.xlsx)
-            // Usamos un query timestamp para evitar almacenamiento en caché en GitHub Pages
-            const response = await fetch(`participantes.json?t=${Date.now()}`);
-            if (!response.ok) {
-                throw new Error('No se pudo cargar la base de datos de participantes.');
-            }
-            
-            const participantes = await response.json();
-            
-            if (participantes.length === 0) {
-                showAlert('error', 'Archivo Vacío', 'La base de datos de participantes está vacía.');
-                setLoading(false);
-                return;
-            }
-            
-            // Buscar coincidencia de correo (insensible a mayúsculas/minúsculas y espacios)
+            // Buscar coincidencia de correo
             const rowCoincidente = participantes.find(p =>
                 p.email && p.email.trim().toLowerCase() === emailValue
             );
@@ -144,54 +233,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Construir nombre completo desde first_name + last_name
+            // Construir nombre completo
             const participante = {
                 correo: rowCoincidente.email.trim(),
                 nombre: `${rowCoincidente.first_name} ${rowCoincidente.last_name}`.trim()
             };
 
-            // Si se encuentra, proceder a generar la constancia
             showAlert('loading', 'Generando Certificado', 'Constancia encontrada. Procesando la plantilla de alta resolución...');
             
-            // Cargar la imagen de la constancia base
+            // Cargar la plantilla
             const img = new Image();
-            img.crossOrigin = "anonymous"; // Prevenir problemas de Canvas contaminado
+            img.crossOrigin = "anonymous";
             img.src = 'constancia_base.png';
 
             img.onload = async () => {
                 try {
-                    // Configurar el Canvas con las dimensiones nativas de la imagen (925x654)
                     canvas.width = img.naturalWidth || img.width;
                     canvas.height = img.naturalHeight || img.height;
                     
-                    // Dibujar la plantilla oficial
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     
                     const nameAreaX = canvas.width / 2;
-                    const nameAreaY = 322; // Centro estimado del campo de nombre en la plantilla
-                    const clearWidth = 620; // Ancho para cubrir el nombre original
-                    const clearHeight = 55;  // Alto para cubrir el nombre original
+                    const nameAreaY = 322;
+                    const clearWidth = 620;
+                    const clearHeight = 55;
                     
                     ctx.fillStyle = '#FFFFFF';
                     ctx.fillRect(nameAreaX - (clearWidth / 2), nameAreaY - (clearHeight / 2), clearWidth, clearHeight);
                     
-                    // Esperar a que la tipografía "Montserrat" esté lista
                     try {
                         await document.fonts.load('bold 32px Montserrat');
                     } catch (fontError) {
-                        console.warn('No se pudo cargar la tipografía Montserrat, usando fuente del sistema.', fontError);
+                        console.warn('Usando fuente alternativa del sistema.', fontError);
                     }
                     
-                    // Configuración del texto del participante
-                    ctx.fillStyle = '#000000'; // Color negro como lo solicita el usuario
+                    ctx.fillStyle = '#000000';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     
-                    // Calcular tamaño de fuente adaptativo por si el nombre es demasiado largo
                     let fontSize = 32;
                     ctx.font = `bold ${fontSize}px "Montserrat", "Arial", sans-serif`;
                     
-                    // Si el nombre es muy largo, reducimos el tamaño para evitar desbordes
                     const maxTextWidth = 600;
                     let textWidth = ctx.measureText(participante.nombre).width;
                     while (textWidth > maxTextWidth && fontSize > 20) {
@@ -200,26 +282,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         textWidth = ctx.measureText(participante.nombre).width;
                     }
                     
-                    // Escribir el nombre del participante
                     ctx.fillText(participante.nombre, nameAreaX, nameAreaY);
                     
-                    // Generar PDF usando jsPDF
                     const { jsPDF } = window.jspdf;
                     
-                    // Crear el PDF con las dimensiones exactas del Canvas
                     const pdf = new jsPDF({
                         orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
                         unit: 'px',
                         format: [canvas.width, canvas.height]
                     });
                     
-                    // Convertir Canvas a datos de imagen
                     const imgData = canvas.toDataURL('image/png');
-                    
-                    // Agregar imagen al PDF ocupando todo el lienzo
                     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
                     
-                    // Iniciar descarga del archivo PDF
                     const sanitizedName = participante.nombre.replace(/[^a-zA-Z0-9]/g, '_');
                     pdf.save(`Constancia_BWAI_${sanitizedName}.pdf`);
                     
@@ -237,9 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 setLoading(false);
             };
 
-        } catch (fetchError) {
-            console.error('Error al realizar fetch:', fetchError);
-            showAlert('error', 'Error de Servidor', 'No se pudo conectar con la base de datos de participantes. Por favor intenta más tarde.');
+        } catch (searchError) {
+            console.error('Error en búsqueda:', searchError);
+            showAlert('error', 'Error General', 'Ocurrió un error inesperado al validar tus datos.');
             setLoading(false);
         }
     });
