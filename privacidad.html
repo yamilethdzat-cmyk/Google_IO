@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Políticas de Privacidad | Build With AI Week</title>
+    <title>Políticas de Privacidad | Google I/O Extended México 2026</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,153 +23,79 @@
                     },
                     colors: {
                         google: {
-                            blue: '#1a73e8',
+                            blue: '#4285f4',
+                            blueDark: '#1a73e8',
                             blueHover: '#1557b0',
                             red: '#ea4335',
                             yellow: '#fbbc05',
                             green: '#34a853',
                             grey: '#5f6368',
-                            lightGrey: '#f1f3f4',
-                            border: '#dadce0'
+                            dark: '#1f1f1f'
                         }
                     }
                 }
             }
         }
     </script>
-    
-    <style>
-        .google-card {
-            background-color: #ffffff;
-            border: 1px solid #dadce0;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-        }
-        .nav-link:hover {
-            color: #1a73e8;
-            border-bottom-color: #1a73e8;
-        }
-    </style>
 </head>
-<body class="h-full flex flex-col justify-between text-[#202124] antialiased font-sans">
+<body class="h-full flex flex-col justify-between text-google-dark antialiased font-sans bg-[#f8f9fa]">
 
-    <!-- Header / Navbar estilo Google Developer Groups -->
-    <header class="w-full bg-white border-b border-gray-200 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-6">
-                <a href="index.html" class="flex items-center">
-                    <img src="logo_gdg_cloud.png" alt="Google Developer Group Cloud Mexico City" class="h-8 sm:h-9 object-contain">
-                </a>
-            </div>
+    <!-- Header -->
+    <header class="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="logo_io_extended.svg" alt="Google I/O Extended" class="h-10 sm:h-12 w-auto object-contain">
+                <span class="hidden sm:inline-block text-xs font-semibold px-2.5 py-1 bg-gray-100 text-gray-700 rounded-full border border-gray-200">
+                    México 2026
+                </span>
+            </a>
             
-            <nav class="flex items-center gap-6 text-sm font-medium text-google-grey">
-                <a href="index.html" class="nav-link py-5 border-b-2 border-transparent transition-all">Inicio</a>
-            </nav>
+            <a href="index.html" class="text-sm font-semibold text-google-blueDark hover:underline flex items-center gap-1">
+                &larr; Volver al Portal
+            </a>
         </div>
     </header>
 
     <!-- Contenido Principal -->
-    <main class="flex-grow flex items-center justify-center py-10 px-4 sm:px-6">
-        <div class="w-full max-w-2xl">
+    <main class="flex-grow py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto bg-white border border-gray-200 shadow-sm rounded-3xl p-8 sm:p-12 space-y-6">
+            <h1 class="text-3xl font-extrabold text-gray-900 font-title border-b border-gray-100 pb-4">
+                Políticas de Privacidad y Protección de Datos
+            </h1>
             
-            <!-- Contenedor / Tarjeta de Google -->
-            <div class="google-card rounded-lg overflow-hidden">
-                
-                <!-- Banner superior del Evento -->
-                <div class="bg-white p-6 border-b border-gray-100 flex justify-center items-center">
-                    <img src="logo_bwai_gdg.png" alt="Build With AI" class="w-full h-auto object-contain max-h-24">
-                </div>
-                
-                <!-- Cuerpo de la Tarjeta -->
-                <div class="p-8 space-y-6">
-                    <!-- Título -->
-                    <div>
-                        <h1 class="text-2xl font-bold tracking-tight text-gray-900 font-title mb-2">
-                            Políticas de Privacidad de Datos
-                        </h1>
-                        <div class="flex items-center gap-x-3 text-xs text-google-grey mb-4 font-medium">
-                            <span>Google Developer Group Cloud Mexico City</span>
-                            <span class="w-1.5 h-1.5 rounded-full bg-gray-350"></span>
-                            <span class="text-google-blue">Build with AI Week 2026</span>
-                        </div>
-                        <div class="h-0.5 w-full bg-gradient-to-r from-google-blue via-google-red to-google-green"></div>
-                    </div>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                Esta política de privacidad aplica al uso de la plataforma de validación y emisión de constancias de participación para el evento <strong>Google I/O Extended México 2026</strong>, organizado por la comunidad <strong>GDG Cloud Mexico City</strong>.
+            </p>
 
-                    <!-- Términos y Condiciones -->
-                    <div class="text-gray-600 text-sm leading-relaxed space-y-5">
-                        <p>
-                            En el <strong>Google Developer Group Cloud Mexico City</strong> (GDG Cloud Mexico City), nos tomamos muy en serio la privacidad y la protección de los datos de nuestros asistentes. A continuación, detallamos cómo se gestiona la información para la generación de constancias en este portal.
-                        </p>
+            <div class="space-y-4 text-sm text-gray-700">
+                <h2 class="text-lg font-bold text-gray-900 font-title">1. Uso de Datos Personales</h2>
+                <p class="leading-relaxed">
+                    El correo electrónico ingresado en el buscador se utiliza exclusivamente en el navegador del usuario para consultar la lista cifrada de asistencia y generar el documento de constancia en PDF. Ningún dato es almacenado ni transmitido a servidores externos durante la generación del certificado.
+                </p>
 
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-gray-900 text-base">1. Información Recopilada</h3>
-                            <p>
-                                Este sitio web únicamente requiere que ingreses la <strong>dirección de correo electrónico</strong> con la que te registraste al evento "Build with AI Week: Gira Universitaria Sur de Tamaulipas 2026". No se solicita información sensible adicional como contraseñas, números telefónicos o datos bancarios.
-                            </p>
-                        </div>
+                <h2 class="text-lg font-bold text-gray-900 font-title">2. Seguridad y Cifrado en Cliente</h2>
+                <p class="leading-relaxed">
+                    La información de los participantes se encuentra almacenada en un formato protegido por clave. 
+                </p>
 
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-gray-900 text-base">2. Finalidad del Procesamiento</h3>
-                            <p>
-                                El correo electrónico introducido se utiliza de manera exclusiva para verificar tu asistencia en el listado del evento. Si el correo coincide, se extraen tu nombre y apellido del registro para plasmarlo en tu constancia de participación personalizada en formato PDF.
-                            </p>
-                        </div>
-
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-gray-900 text-base">3. Seguridad y Privacidad Local (Sin Servidor Central)</h3>
-                            <p>
-                                Para garantizar el más alto estándar de protección de datos, el procesamiento de la información se realiza en su totalidad en el navegador web del cliente. 
-                            </p>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li>La base de datos original del evento se encuentra encriptada de forma segura en el servidor de archivos (aplicando algoritmos criptográficos robustos).</li>
-                                <li>El descifrado de los registros de asistencia se realiza en la memoria RAM de tu computadora o dispositivo móvil al abrir la página.</li>
-                                <li>Tu correo electrónico nunca es almacenado en un servidor externo, ni se registra en bases de datos de seguimiento o telemetría.</li>
-                            </ul>
-                        </div>
-
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-gray-900 text-base">4. Compartición de Datos</h3>
-                            <p>
-                                Bajo ninguna circunstancia compartimos, vendemos, rentamos o distribuimos la información de los participantes a terceros con fines comerciales, de marketing o publicidad.
-                            </p>
-                        </div>
-
-                        <div class="space-y-2">
-                            <h3 class="font-bold text-gray-900 text-base">5. Cookies y Rastreo</h3>
-                            <p>
-                                Este portal web no utiliza cookies de rastreo, píxeles de seguimiento ni herramientas de análisis invasivas que comprometan tu identidad digital en la red.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Botón de Regreso -->
-                    <div class="pt-4 flex justify-start">
-                        <a 
-                            href="index.html" 
-                            class="inline-flex items-center gap-2 py-2.5 px-6 bg-google-blue hover:bg-google-blueHover text-white font-semibold rounded-md shadow-sm transition-all duration-200 text-sm"
-                        >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                            </svg>
-                            Volver al Buscador
-                        </a>
-                    </div>
-
-                </div>
+                <h2 class="text-lg font-bold text-gray-900 font-title">3. Validez del Documento</h2>
+                <p class="leading-relaxed">
+                    Las constancias emitidas certifican la participación técnica y asistencia en las sesiones de Google I/O Extended México 2026 organizadas por GDG Cloud Mexico City.
+                </p>
             </div>
-            
+
+            <div class="pt-6 border-t border-gray-100">
+                <a href="index.html" class="inline-flex items-center gap-2 px-6 py-3 bg-google-blueDark text-white text-sm font-semibold rounded-full hover:bg-google-blueHover transition-colors">
+                    Aceptar y regresar a las constancias
+                </a>
+            </div>
         </div>
     </main>
 
-    <!-- Footer estilo Google Community -->
-    <footer class="w-full bg-white border-t border-gray-200 py-8 text-xs text-google-grey text-center font-sans">
+    <!-- Footer -->
+    <footer class="w-full bg-white border-t border-gray-200 py-6 text-xs text-google-grey text-center">
         <div class="max-w-7xl mx-auto px-4 space-y-2">
-            <p class="font-medium text-gray-800">&copy; 2026 Build with AI - Gira Universitaria Sur de Tamaulipas.</p>
-            <p>Este evento y portal son organizados de forma independiente por GDG Cloud Mexico City.</p>
-            <div class="flex justify-center gap-4 mt-3">
-                <a href="privacidad.html" class="hover:underline hover:text-google-blue">Políticas de Privacidad</a>
-                <span>&bull;</span>
-                <a href="https://gdg.community.dev/participation-terms/" target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-google-blue">Términos del Evento</a>
-            </div>
+            <p>&copy; 2026 Google I/O Extended México 2026 — GDG Cloud Mexico City.</p>
         </div>
     </footer>
 
